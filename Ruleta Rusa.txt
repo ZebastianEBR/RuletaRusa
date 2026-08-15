@@ -1,0 +1,23 @@
+Ruleta Rusa
+
+Abstraccion: 
+	Que se solicita finalmente?
+		programar un juego de la ruleta rusa
+	Que informacion es relevante dado el problema?
+		nombre del jugador
+
+Descomposicion:
+	Que se debe hacer?
+		Ingresar nombre jugador
+		recargar revolver (una sola bala)
+		emparejar con jugadores (3 pc)
+		iniciar por turnos
+		terminar (cuando muere o cuando gana)
+		generar mensaje
+		mostrar mensaje
+	Como debe hacerse?
+		para este caso se utilizara el lenguaje de programacion elixir
+
+Reconocimiento de patrones:
+	Que se puede reutilizar de otros problemas?
+		por ahora, nada
