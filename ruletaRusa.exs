@@ -72,11 +72,11 @@ defmodule Jugar do
     jugadores_vivos = Emparejar_jugadores.emparejar_jugadores(jugadores)
     Ver_jugadores.ver_jugadores(jugadores_vivos)
 
+    Validar_para_terminar.validar_para_terminar(jugadores_vivos)
+
     Iniciar_ronda.iniciar_ronda(revolver, jugadores_vivos)
 
-    #Validar_para_terminar.validar_para_terminar()
-    #Generar_mensaje.generar_mensaje()
-    #Mostrar_mensaje.mostrar_mensaje()
+
   end
 end
 
@@ -153,13 +153,44 @@ defmodule Iniciar_ronda do
 
         Agregar_jugador.agregar_jugador(jugadores, jugador_muerto)
         |> Eliminar_jugador.eliminar_jugador(jugador)
-        |> Ver_jugadores.ver_jugadores()
         |> Preguntar_seguir.preguntar_seguir()
 
       end
       Preguntar_seguir.preguntar_seguir(jugadores)
 
     end
+end
+
+
+defmodule Validar_para_terminar do
+  def validar_para_terminar(jugadores_vivos) do
+    case jugadores_vivos do
+      [jugador] ->
+        Generar_mensaje.generar_mensaje(jugador)
+        |> Mostrar_mensaje.mostrar_mensaje()
+        Iniciar.iniciar()
+
+      _ -> IO.puts("seguimos")
+    end
+
+
+  end
+
+end
+
+
+defmodule Generar_mensaje do
+  def generar_mensaje(jugador) do
+    "Felicidades #{jugador.nombre}, la suerte esta de tu lado, y tienes otra oportunidad para vivir. \n
+    Esperamos encarecidamente que hagas algo util y que no juegues cosas tan peligrosas. \n
+    Con amor WhoAmI?"
+  end
+end
+
+defmodule Mostrar_mensaje do
+  def mostrar_mensaje(mensaje) do
+    IO.puts(mensaje)
+  end
 end
 
 
