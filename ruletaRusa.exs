@@ -2,31 +2,62 @@
 # Autor: Sebastian Eduardo Ballesteros ruiz
 # Licencia: GPL v3
 # Version: beta 0.1
+jugadores = []
+defmodule Ruleta_rusa do
+  def iniciar do
+    jugadores = []
+    menu(jugadores)
+  end
 
-defmodule Iniciar do
-  def iniciar() do
-    jugadores = [%{nombre: "pc1", vivo: true}, %{nombre: "pc2", vivo: true}, %{nombre: "pc3", vivo: true}]
+  def menu(jugadores) do
+    IO.puts("===================================== \n
+      BIENVENIDOS \n
+      A continuacion se muestran las posibles opciones para elegir... Teclea y Se preciso \n
+      ")
+
+    opcion = IO.gets("
+      Nuevo jugador: 1 \n
+      Ver jugadores: 2 \n
+      Eliminar jugador: 3 \n
+      Jugar: 4 \n
+      Salir: 5 \n=====================================\n")
+    |> String.trim()
 
 
-    jugador = Crear_jugador.crear_jugador()
-    lista_nueva_jugadores = Agregar_jugador.agregar_jugador(jugadores, jugador)
-    IO.puts("#{jugador.nombre}\n")
+    case opcion do
 
+      "1" -> jugador = Crear_jugador.crear_jugador(jugadores)
+           lista_nuevo_jugador = Agregar_jugador.agregar_jugador(jugador, jugadores)
+           IO.puts("#{jugador.nombre}\n")
+           menu(lista_nuevo_jugador)
 
-    Jugar.jugar(lista_nueva_jugadores)
+      "2" -> Ver_jugadores.ver_jugadores(jugadores)
+           menu(jugadores)
 
+      #3 -> Eliminar_jugador.eliminar_jugador(jugadores, jugador)
 
+      "4" -> Jugar.jugar(jugadores)
+
+      "5" -> IO.puts("FIN DEL JUEGO")
+
+      _ -> IO.puts("Opcion no valida")
+            menu(jugadores)
+
+    end
   end
 end
 
 
 #CRUD
 defmodule Crear_jugador do
-  def crear_jugador() do
+  def crear_jugador(jugadores) do
     nombre = Ingresar_nombre.ingresar_nombre()
+    id = Enum.count(jugadores) + 1
+
     %{
         nombre: nombre,
-        vivo: true
+        vivo: true,
+        id: id
       }
   end
 end
@@ -40,7 +71,7 @@ end
 
 
 defmodule Agregar_jugador do
-  def agregar_jugador(jugadores, jugador) do
+  def agregar_jugador(jugador, jugadores) do
     jugadores ++ [jugador]
 
   end
@@ -134,7 +165,7 @@ defmodule Iniciar_ronda do
       turno = Enum.random(0..length(jugadores)-1)
       jugador = Enum.at(jugadores, turno)
 
-      IO.puts("Es el turno de #{jugador.nombre}\n")
+      IO.puts("========================\n Es el turno de #{jugador.nombre}\n")
 
       if revolver == false do
           IO.puts("Click, el revolver no ha disparado")
@@ -143,7 +174,7 @@ defmodule Iniciar_ronda do
       else
         IO.puts("Pffss, el revolver disparo")
         IO.puts("#{jugador.nombre} a muerto\n")
-        IO.puts("\njugador #{jugador.nombre} #{jugador.vivo} eliminado")
+        IO.puts("\njugador #{jugador.nombre} #{jugador.vivo} eliminado\n ========================")
 
         jugador_muerto =
           %{
@@ -151,7 +182,7 @@ defmodule Iniciar_ronda do
             vivo: false
           }
 
-        Agregar_jugador.agregar_jugador(jugadores, jugador_muerto)
+        Agregar_jugador.agregar_jugador(jugador_muerto, jugadores)
         |> Eliminar_jugador.eliminar_jugador(jugador)
         |> Preguntar_seguir.preguntar_seguir()
 
@@ -168,7 +199,7 @@ defmodule Validar_para_terminar do
       [jugador] ->
         Generar_mensaje.generar_mensaje(jugador)
         |> Mostrar_mensaje.mostrar_mensaje()
-        Iniciar.iniciar()
+        Ruleta_rusa.iniciar()
 
       _ -> IO.puts("seguimos")
     end
@@ -181,9 +212,9 @@ end
 
 defmodule Generar_mensaje do
   def generar_mensaje(jugador) do
-    "Felicidades #{jugador.nombre}, la suerte esta de tu lado, y tienes otra oportunidad para vivir. \n
+    "=================================================================\n Felicidades #{jugador.nombre}, la suerte esta de tu lado, y tienes otra oportunidad para vivir. \n
     Esperamos encarecidamente que hagas algo util y que no juegues cosas tan peligrosas. \n
-    Con amor WhoAmI?"
+    Con amor WhoAmI?\n =================================================================\n"
   end
 end
 
@@ -196,12 +227,13 @@ end
 
 defmodule Preguntar_seguir do
   def preguntar_seguir(jugadores) do
+    Ver_jugadores.ver_jugadores(jugadores)
     otra = IO.gets("Quieres seguir?... s = si y n = no  ")
       |> String.trim()
       if otra == "s" do
         Jugar.jugar(jugadores)
       else
-        Iniciar.iniciar()
+        Ruleta_rusa.iniciar()
       end
   end
 end
@@ -209,11 +241,11 @@ end
 # Utiles
 defmodule Ingresar_nombre do
     def ingresar_nombre() do
-      IO.gets("Bienvenido, Ingresa tu nombre:  ")
+      IO.gets("Ingresa tu nombre:  ")
       |> String.trim()
     end
 end
 
 
 
-Iniciar.iniciar()
+Ruleta_rusa.iniciar()
